@@ -2,6 +2,7 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static lib.ui.SearchPageObject.SEARCH_SKIP_BUTTON;
 
@@ -15,7 +16,7 @@ public class WelcomePageObject extends MainPageObject {
     NEXT_LINK = "id:Next",
     GET_STARTED_BUTTON = "id:Get started";
 
-    public WelcomePageObject(AppiumDriver driver) {
+    public WelcomePageObject(RemoteWebDriver driver) {
         super(driver);
     }
 

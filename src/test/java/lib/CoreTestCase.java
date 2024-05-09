@@ -5,18 +5,17 @@ import junit.framework.TestCase;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.SearchPageObjectFactory;
 import org.openqa.selenium.ScreenOrientation;
-
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.time.Duration;
 
-import static java.util.Collections.rotate;
 
 public class CoreTestCase extends TestCase {
 
     private static final String PLATFORM_IOS = "ios";
     private static final String PLATFORM_ANDROID = "android";
 
-    protected AppiumDriver driver;
+    protected RemoteWebDriver driver;
     protected Platform Platform;
 
 
@@ -24,8 +23,9 @@ public class CoreTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         driver = Platform.getInstance().getDriver();
-//        this.rotateScreenPortrait();
+        this.rotateScreenPortrait();
         this.skipWelcomePage();
+        this.openWikiWebPageForMobileWeb();
     }
 
     @Override
@@ -35,20 +35,46 @@ public class CoreTestCase extends TestCase {
     }
 
     protected void rotateScreenPortrait() {
-        driver.rotate(ScreenOrientation.PORTRAIT);
-
+        if (driver instanceof AppiumDriver) {
+            AppiumDriver driver = (AppiumDriver) this.driver;
+            driver.rotate(ScreenOrientation.PORTRAIT);
+        } else {
+            System.out.println("Method rotateScreenPortrait() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
     }
 
     protected void rotateScreenLandscape() {
-        driver.rotate(ScreenOrientation.LANDSCAPE);
+        if (driver instanceof AppiumDriver) {
+            AppiumDriver driver = (AppiumDriver) this.driver;
+            driver.rotate(ScreenOrientation.LANDSCAPE);
+        } else {
+            System.out.println("Method rotateScreenLandscape() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
     }
 
     protected void backgroundApp(int seconds) {
-        driver.runAppInBackground(Duration.ofSeconds(seconds));
+        if (driver instanceof AppiumDriver) {
+            AppiumDriver driver = (AppiumDriver) this.driver;
+            driver.runAppInBackground(Duration.ofSeconds(seconds));
+        } else {
+            System.out.println("Method backgroundApp() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
+    }
+
+    protected void openWikiWebPageForMobileWeb() {
+        if (Platform.getInstance().isMw()) {
+            driver.get("https://en.m.wikipedia.org");
+        } else {
+            System.out.println("Method openWikiWebPageForMobileWeb() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
     }
 
     private void skipWelcomePage() {
-        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
-        SearchPageObject.clickSkip();
+        if (Platform.getInstance().isAndroid() || Platform.getInstance().isIOS()) {
+            SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+            SearchPageObject.clickSkip();
+        } else {
+            System.out.println("Method skipWelcomePage() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
     }
 }

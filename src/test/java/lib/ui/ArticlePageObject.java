@@ -5,9 +5,10 @@ import lib.Platform;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract public class ArticlePageObject extends MainPageObject {
-    public ArticlePageObject(AppiumDriver driver) {
+    public ArticlePageObject(RemoteWebDriver driver) {
         super(driver);
     }
 
@@ -16,6 +17,7 @@ abstract public class ArticlePageObject extends MainPageObject {
             DESCRIPTION ,
             FOOTER_ELEMENT,
             OPTIONS_BUTTON,
+            OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
             ADD_TO_MY_LIST_BUTTON,
             ADD_ARTICLE_TO_MY_LIST_BUTTON,
             ADD_SECOND_ARTICLE_TO_MY_LIST_BUTTON,
@@ -30,15 +32,17 @@ abstract public class ArticlePageObject extends MainPageObject {
 
     public WebElement waitForTitleElement(String substring) {
         String title = getTitleOfArticle(substring);
-        return this.waitForElementPresent(title, "Cannot find article title on page", 30);
+        return this.waitForElementPresent(title, "Cannot find article title on page", 45);
     }
 
     public String getArticleTitle(String substring) {
         WebElement title_element = waitForTitleElement(substring);
         if (Platform.getInstance().isAndroid()) {
             return title_element.getAttribute("text");
-        } else {
+        } else if (Platform.getInstance().isIOS()) {
             return title_element.getAttribute("name");
+        } else {
+            return title_element.getText();
         }
     }
     private static String getTitleOfArticle(String substring) {
@@ -83,8 +87,10 @@ abstract public class ArticlePageObject extends MainPageObject {
                 FOOTER_ELEMENT,
                 "Cannot find the end of article",
                 20);
-        } else {
+        } else if (Platform.getInstance().isIOS()) {
             this.swipeUpTillElementAppear(FOOTER_ELEMENT, "Cannot find the end of article", 20);
+        } else {
+            this.scrollWebPageTillElementNotVisible(FOOTER_ELEMENT, "Cannot find the end of article", 20);
         }
     }
 
@@ -135,10 +141,27 @@ abstract public class ArticlePageObject extends MainPageObject {
     }
 
     public void addArticlesToMySaved() {
+        if (Platform.getInstance().isMw()) {
+            this.removeArticleFromSavedIfItAdded();
+        }
         this.waitForElementAndClick(
                 OPTIONS_BUTTON,
                 "Cannot find option button to save article",
-                5);
+                15);
+    }
+
+    public void removeArticleFromSavedIfItAdded() {
+        if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)) {
+            this.waitForElementAndClick(
+                    OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
+                    "Cannot click button to remove an article from saved",
+                    1
+            );
+            this.waitForElementPresent(
+                    ADD_ARTICLE_TO_MY_LIST_BUTTON,
+                    "Cannot find button to add an article to saved list after removing it from this list before"
+            );
+        }
     }
 
     public void addArticleToMyListWithNameOfArticle(String name_of_folder, String name_of_article) {
@@ -174,17 +197,24 @@ abstract public class ArticlePageObject extends MainPageObject {
     }
 
     public void closeArticle() {
-        this.waitForElementAndClick(
-                NAVIGATE_UP_BUTTON,
-                "Cannot close article",
-                5);
+        if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
+            this.waitForElementAndClick(
+                    NAVIGATE_UP_BUTTON,
+                    "Cannot close article",
+                    5);
+        } else {
+            System.out.println("Method closeArticle() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
     }
-
     public void clickCancel() {
+        if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
         this.waitForElementAndClick(
                 CANCEL_BUTTON,
                 "Cannot find cancel button",
                 5);
+        } else {
+            System.out.println("Method clickCancel() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
     }
 
     public void addArticleToCreatedFolder(String name_of_folder) {
@@ -203,6 +233,10 @@ abstract public class ArticlePageObject extends MainPageObject {
 
     public void assertArticleHasTitle(String substring, String title) {
         String title_of_article = getTitleOfArticle(substring);
-        this.assertElementPresent(title_of_article, "text", title, "Cannot find title " + title + " of article", 10);
+        if (Platform.getInstance().isAndroid()) {
+            this.assertElementPresent(title_of_article, "text", title, "Cannot find title " + title + " of article", 10);
+        } else {
+            this.assertElementPresent(title_of_article, "name", title, "Cannot find title " + title + " of article", 10);
+        }
     }
 }

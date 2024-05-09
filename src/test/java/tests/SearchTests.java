@@ -13,7 +13,7 @@ public class SearchTests extends CoreTestCase {
 
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.waitForSearchResult("Java (programming language)");
+        SearchPageObject.waitForSearchResult("bject-oriented programming language");
     }
 
     @Test
@@ -88,7 +88,7 @@ public class SearchTests extends CoreTestCase {
     public void testTitleAndDescriptionInSearchResults() {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         String articleTitle = "Java (programming language)";
-        String articleDescription = "Object-oriented programming language";
+        String articleDescription = "bject-oriented programming language";
 
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");

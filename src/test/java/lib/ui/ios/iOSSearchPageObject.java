@@ -2,6 +2,7 @@ package lib.ui.ios;
 
 import io.appium.java_client.AppiumDriver;
 import lib.ui.SearchPageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class iOSSearchPageObject extends SearchPageObject {
     static {
@@ -15,7 +16,7 @@ public class iOSSearchPageObject extends SearchPageObject {
         SEARCH_SKIP_BUTTON = "id:Skip";
         SEARCH_INPUT_TEXT = "id:Search Wikipedia";
     }
-    public iOSSearchPageObject(AppiumDriver driver) {
+    public iOSSearchPageObject(RemoteWebDriver driver) {
         super(driver);
     }
 

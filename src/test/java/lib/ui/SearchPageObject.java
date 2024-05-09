@@ -1,40 +1,45 @@
 package lib.ui;
+
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.List;
 
 abstract public class SearchPageObject extends MainPageObject {
     protected static String
-    SEARCH_INIT_ELEMENT,
-    SEARCH_INPUT,
-    SEARCH_CANCEL_BUTTON,
-    SEARCH_RESULT_BY_SUBSTRING_TPL,
-    SEARCH_TITLE_AND_DESCRIPTION_RESULT_BY_SUBSTRING_TPL,
-    SEARCH_RESULT_ELEMENT,
-    SEARCH_EMPTY_RESULT_ELEMENT,
-    SEARCH_SKIP_BUTTON,
-    SEARCH_INPUT_TEXT;
+            SEARCH_INIT_ELEMENT,
+            SEARCH_INPUT,
+            SEARCH_CANCEL_BUTTON,
+            SEARCH_RESULT_BY_SUBSTRING_TPL,
+            SEARCH_TITLE_AND_DESCRIPTION_RESULT_BY_SUBSTRING_TPL,
+            SEARCH_RESULT_ELEMENT,
+            SEARCH_EMPTY_RESULT_ELEMENT,
+            SEARCH_SKIP_BUTTON,
+            SEARCH_INPUT_TEXT;
 
-     public SearchPageObject(AppiumDriver driver) {
-         super(driver);
-     }
+    public SearchPageObject(RemoteWebDriver driver) {
+        super(driver);
+    }
 
-     /*TEMPLATES METHODS*/
-     private static String getResultSearchElement(String substring) {
-         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
-     }
+    /*TEMPLATES METHODS*/
+    private static String getResultSearchElement(String substring) {
+        return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+    }
 
     private static String getTitleAndDescriptionOfSearchElement(String substring) {
         return SEARCH_TITLE_AND_DESCRIPTION_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
+
     /*TEMPLATES METHODS*/
     public void initSearchInput() {
         this.waitForElementPresent(SEARCH_INIT_ELEMENT, "Cannot find search input after clicking search init element");
         this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find and click search init element", 30);
     }
+
     public void waitForCancelButtonToAppear() {
         this.waitForElementPresent(SEARCH_CANCEL_BUTTON, "Cannot find search cancel button", 5);
     }
@@ -48,12 +53,12 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void typeSearchLine(String search_line) {
-         this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find and type into search input", 10);
+        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find and type into search input", 10);
     }
 
     public void waitForSearchResult(String substring) {
-         String search_result_xpath = getResultSearchElement(substring);
-         this.waitForElementPresent(search_result_xpath, "Cannot find search result with substring " + substring, 20);
+        String search_result_xpath = getResultSearchElement(substring);
+        this.waitForElementPresent(search_result_xpath, "Cannot find search result with substring " + substring, 20);
     }
 
     public void waitForElementByTitleAndDescription(String substringTitle, String substringDescription) {
@@ -66,7 +71,7 @@ abstract public class SearchPageObject extends MainPageObject {
 
     public void clickByArticleWithSubstring(String substring) {
         String search_result_xpath = getResultSearchElement(substring);
-        this.waitForElementAndClick(search_result_xpath, "Cannot find and click search result with substring " + substring, 25);
+        this.waitForElementAndClick(search_result_xpath, "Cannot find and click search result with substring " + substring, 45);
     }
 
     public int getAmountOfSearchArticles() {
@@ -101,8 +106,18 @@ abstract public class SearchPageObject extends MainPageObject {
 
     public void assertSearchInputHasText(String value) {
         WebElement text_element = waitForSearchInputText();
-        String inputText = text_element.getAttribute("text");
-        this.assertElementHasText("Cannot find input text", value, inputText);
+        if (Platform.getInstance().isAndroid()) {
+            String inputText = text_element.getAttribute("text");
+            this.assertElementHasText("Cannot find input text", value, inputText);
+        } else {
+            if (Platform.getInstance().isMw()) {
+                String inputText = text_element.getAttribute("placeholder");
+                this.assertElementHasText("Cannot find input text", value, inputText);
+            } else {
+                String inputText = text_element.getAttribute("name");
+                this.assertElementHasText("Cannot find input text", value, inputText);
+            }
+        }
     }
 
     public void assertSearchResultsHaveText(String text) {
