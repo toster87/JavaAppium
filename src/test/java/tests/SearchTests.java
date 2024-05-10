@@ -99,7 +99,7 @@ public class SearchTests extends CoreTestCase {
     @Test
     public void testAmountOfSearchResults() {
 
-        String search_line = "Linkin Park discography";
+        String search_line = "May";
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.initSearchInput();
