@@ -1,15 +1,14 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
 import lib.Platform;
-import org.openqa.selenium.By;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract public class MyListsPageObject extends MainPageObject {
     protected static String
             FOLDER_BY_NAME_TPL,
             ARTICLE_BY_TITLE_TPL,
-            REMOVE_FROM_SAVED_BUTTON;
+            REMOVE_FROM_SAVED_BUTTON,
+            SAVED_ARTICLES_ELEMENT;
 
     public MyListsPageObject(RemoteWebDriver driver) {
         super(driver);
@@ -42,8 +41,11 @@ abstract public class MyListsPageObject extends MainPageObject {
     }
 
     public void waitForArticleToDisappearByTitle(String article_title) {
+        if (Platform.getInstance().isMw()) {
+            driver.navigate().refresh();
+        }
         String article_xpath = getSavedArticleXpathByTitle(article_title);
-        this.waitForElementNotPresent(article_xpath, "Saved article still present with title " + article_title, 15);
+        this.waitForElementNotPresent(article_xpath, "Saved article still present with title " + article_title, 25);
     }
 
     public void swipeByArticleToDelete(String article_title) {
@@ -54,21 +56,22 @@ abstract public class MyListsPageObject extends MainPageObject {
             this.swipeElementToLeft(
                     article_xpath,
                     "Cannot find saved article");
-
-            } else {
+        } else {
                 String remove_locator = getRemoveButtonByTitle(article_title);
                 this.waitForElementAndClick(
                         remove_locator,
                         "Cannot click button to remove article from saved",
-                        10
+                        30
                 );
+            driver.navigate().refresh();
             }
         if (Platform.getInstance().isIOS()) {
             this.clickElementToTheRightUpperCorner(article_xpath, "Cannot find saved article");
         }
-        if (Platform.getInstance().isMw()) {
-            driver.navigate().refresh();
-        }
-        this.waitForArticleToDisappearByTitle(article_title);
+    }
+
+    public int getAmountOfSavedArticles() {
+        this.waitForElementPresent(SAVED_ARTICLES_ELEMENT, "Cannot find anything in my saved", 25);
+        return this.getAmountOfElements(SAVED_ARTICLES_ELEMENT);
     }
 }

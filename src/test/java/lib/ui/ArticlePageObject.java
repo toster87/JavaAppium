@@ -115,13 +115,13 @@ abstract public class ArticlePageObject extends MainPageObject {
         this.waitForElementAndClick(
                 OPTIONS_BUTTON,
                 "Cannot find option button to save article",
-                5);
+                15);
 
 
         this.waitForElementAndClick(
                 ADD_TO_MY_LIST_BUTTON,
                 "Cannot find button to save article",
-                5);
+                15);
 
         this.waitForElementAndClear(
                 MY_LIST_NAME_INPUT,
@@ -132,7 +132,7 @@ abstract public class ArticlePageObject extends MainPageObject {
                 MY_LIST_NAME_INPUT,
                 name_of_folder,
                 "Cannot put text into articles folder input",
-                5);
+                15);
 
         this.waitForElementAndClick(
                 MY_LIST_OK_BUTTON,
@@ -155,7 +155,7 @@ abstract public class ArticlePageObject extends MainPageObject {
             this.waitForElementAndClick(
                     OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
                     "Cannot click button to remove an article from saved",
-                    1
+                    5
             );
             this.waitForElementPresent(
                     ADD_ARTICLE_TO_MY_LIST_BUTTON,

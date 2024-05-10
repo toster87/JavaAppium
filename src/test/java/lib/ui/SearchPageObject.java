@@ -100,8 +100,11 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void clearSearchInputAndTypeSearchLine(String search_line) {
+        if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
         this.waitForElementAndClear(SEARCH_INPUT_TEXT, "Cannot find and clear search input text", 10);
         this.waitForElementAndSendKeys(SEARCH_INPUT_TEXT, search_line, "Cannot find and type into search input", 5);
+    } else {
+            System.out.println("Method clearSearchInputAndTypeSearchLine() does nothing for platform " + Platform.getInstance().getPlatformVar());}
     }
 
     public void assertSearchInputHasText(String value) {

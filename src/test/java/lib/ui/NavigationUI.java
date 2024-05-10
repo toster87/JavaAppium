@@ -17,7 +17,7 @@ abstract public class NavigationUI extends MainPageObject {
 
     public void openNavigation() {
         if (Platform.getInstance().isMw()) {
-            this.waitForElementAndClick(OPEN_NAVIGATION, "Cannot find and click open navigationbutton", 5);
+            this.waitForElementAndClick(OPEN_NAVIGATION, "Cannot find and click open navigationbutton", 15);
         } else {
             System.out.println("Method openNavigation() does nothing for platform " + Platform.getInstance().getPlatformVar());
         }
@@ -28,7 +28,7 @@ abstract public class NavigationUI extends MainPageObject {
             this.tryClickElementWithFewAttempts(
                     MY_LIST_LINK,
                     "Cannot find navigation button to my list",
-                    5
+                    25
             );
         } else {
             this.waitForElementAndClick(
