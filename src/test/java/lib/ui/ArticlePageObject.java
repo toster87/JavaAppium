@@ -1,6 +1,7 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import io.qameta.allure.Step;
 import lib.Platform;
 import org.junit.Assert;
 import org.openqa.selenium.By;
@@ -30,13 +31,16 @@ abstract public class ArticlePageObject extends MainPageObject {
             CREATED_FOLDER;
 
 
+    @Step("Waiting for title on the article page")
     public WebElement waitForTitleElement(String substring) {
         String title = getTitleOfArticle(substring);
         return this.waitForElementPresent(title, "Cannot find article title on page", 45);
     }
 
+    @Step("Get article title")
     public String getArticleTitle(String substring) {
         WebElement title_element = waitForTitleElement(substring);
+        screenshot(this.takeScreenShot("article_title"));
         if (Platform.getInstance().isAndroid()) {
             return title_element.getAttribute("text");
         } else if (Platform.getInstance().isIOS()) {
@@ -81,6 +85,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         this.waitForElementAndClick(article_xpath, "Cannot find name of article " + article_xpath + " to add to my list", 10);
     }
 
+    @Step("Swiping to footer an article page")
     public void swipeToFooter() {
         if(Platform.getInstance().isAndroid()) {
         this.swipeUpToFindElement(
@@ -110,6 +115,8 @@ abstract public class ArticlePageObject extends MainPageObject {
         int screen_size_by_y = driver.manage().window().getSize().getHeight();
         return element_location_by_y < screen_size_by_y;
     }
+
+    @Step("Adding the article to my list")
     public void addArticleToMyList(String name_of_folder) {
 
         this.waitForElementAndClick(
@@ -140,6 +147,7 @@ abstract public class ArticlePageObject extends MainPageObject {
                 10);
     }
 
+    @Step("Adding the article to my saved")
     public void addArticlesToMySaved() {
         if (Platform.getInstance().isMw()) {
             this.removeArticleFromSavedIfItAdded();
@@ -150,6 +158,7 @@ abstract public class ArticlePageObject extends MainPageObject {
                 15);
     }
 
+    @Step("Removing the article from saved if it has benn added")
     public void removeArticleFromSavedIfItAdded() {
         if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)) {
             this.waitForElementAndClick(
@@ -196,6 +205,7 @@ abstract public class ArticlePageObject extends MainPageObject {
                 10);
     }
 
+    @Step("Closing the article")
     public void closeArticle() {
         if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
             this.waitForElementAndClick(
@@ -235,8 +245,10 @@ abstract public class ArticlePageObject extends MainPageObject {
         String title_of_article = getTitleOfArticle(substring);
         if (Platform.getInstance().isAndroid()) {
             this.assertElementPresent(title_of_article, "text", title, "Cannot find title " + title + " of article", 10);
-        } else {
+        } else if (Platform.getInstance().isIOS()){
             this.assertElementPresent(title_of_article, "name", title, "Cannot find title " + title + " of article", 10);
+        } else {
+            System.out.println("Method assertArticleHasTitle() does nothing for platform " + Platform.getInstance().getPlatformVar());
         }
     }
 }

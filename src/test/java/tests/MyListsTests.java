@@ -7,6 +7,7 @@ import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.MyListsPageObjectFactory;
 import lib.ui.factories.NavigationUiFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -121,7 +122,7 @@ public class MyListsTests extends CoreTestCase {
 
         int amount_of_saved_articles = MyListsPageObject.getAmountOfSavedArticles();
 
-        assertTrue(
+        Assert.assertTrue(
                 "We found too few results",
                 amount_of_saved_articles < 2);
     }
