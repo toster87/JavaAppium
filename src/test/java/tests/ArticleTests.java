@@ -16,7 +16,7 @@ public class ArticleTests extends CoreTestCase  {
     @Test
     @Features(value = {@Feature(value = "Search"),@Feature(value = "Article")})
     @DisplayName("Compare article title with expected one")
-    @Description("We open 'Java (programming language)' article and make sure the sure is expected")
+    @Description("We open 'Java (programming language)' article and make sure the article title is expected")
     @Step("Starting test testCompareArticleTitle")
     @Severity(value = SeverityLevel.BLOCKER)
     public void testCompareArticleTitle() {
@@ -55,6 +55,11 @@ public class ArticleTests extends CoreTestCase  {
     }
 
     @Test
+    @Features(value = {@Feature(value = "Search"),@Feature(value = "Article")})
+    @DisplayName("Testing article has title")
+    @Description("We open an article and wait for title of article")
+    @Step("Starting test testArticleHasTitle")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testArticleHasTitle() {
 
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);

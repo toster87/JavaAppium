@@ -49,40 +49,35 @@ abstract public class ArticlePageObject extends MainPageObject {
             return title_element.getText();
         }
     }
+    @Step("Get title on the article page")
     private static String getTitleOfArticle(String substring) {
         return TITLE.replace("{SUBSTRING}", substring);
     }
-
+    @Step("Get description on the article page")
     private static String getDescriptionOfArticle(String substring) {
         return DESCRIPTION.replace("{SUBSTRING}", substring);
     }
 
+    @Step("Waiting for title on the article page")
     public WebElement waitForDescriptionElement(String substring) {
         String description_of_article = getDescriptionOfArticle(substring);
         return this.waitForElementPresent(description_of_article, "Cannot find description of article on page", 15);
     }
 
-    public String getArticleDescription(String substring) {
-        WebElement description_of_article = waitForDescriptionElement(substring);
-        return description_of_article.getAttribute("text");
-    }
-
+    @Step("Get name of folder in my list")
     private static String getNameOfFolderInMyList(String substring) {
         return CREATED_FOLDER.replace("{SUBSTRING}", substring);
     }
 
+    @Step("Waiting for name of folder and click on this name")
     public void waitForNameOfFolderElementAndClick(String substring) {
         String name_of_article = getNameOfFolderInMyList(substring);
         this.waitForElementAndClick(name_of_article, "Cannot find name of article " + name_of_article + " to add to my list", 15);
     }
 
+    @Step("Get name of article for adding to my list")
     private static String getNameOfArticleToAddToMyList(String substring) {
         return ADD_ARTICLE_TO_MY_LIST_BUTTON.replace("{SUBSTRING}", substring);
-    }
-
-    public void waitForNameOfArticleToAddToMyListElementAndClick(String substring) {
-        String article_xpath = getNameOfArticleToAddToMyList(substring);
-        this.waitForElementAndClick(article_xpath, "Cannot find name of article " + article_xpath + " to add to my list", 10);
     }
 
     @Step("Swiping to footer an article page")
@@ -99,6 +94,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         }
     }
 
+    @Step("Swiping till element appear on page")
     public void swipeUpTillElementAppear(String locator, String error_message, int max_swipes) {
         int already_swiped = 0;
         while (!this.isElementLocatedOnTheScreen(locator)) {
@@ -110,6 +106,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         }
     }
 
+    @Step("Get element located on the screen")
     public boolean isElementLocatedOnTheScreen(String locator) {
         int element_location_by_y = this.waitForElementPresent(locator, "Cannot find element by locator", 5).getLocation().getY();
         int screen_size_by_y = driver.manage().window().getSize().getHeight();
@@ -172,39 +169,6 @@ abstract public class ArticlePageObject extends MainPageObject {
             );
         }
     }
-
-    public void addArticleToMyListWithNameOfArticle(String name_of_folder, String name_of_article) {
-        this.addArticlesToMySaved();
-
-//        this.waitForNameOfArticleToAddToMyListElementAndClick(name_of_article);
-
-        this.waitForElementAndClick(
-                ADD_ARTICLE_TO_MY_LIST_BUTTON,
-                "Cannot find add article to my list button",
-                5);
-
-        this. waitForElementAndClick(
-                CREATE_NEW_LIST_BUTTON,
-                "Cannot find create new list button",
-                5);
-
-        this.waitForElementAndClear(
-                MY_LIST_NAME_INPUT,
-                "Cannot find input to set name of article folder",
-                5);
-
-        this.waitForElementAndSendKeys(
-                MY_LIST_NAME_INPUT,
-                name_of_folder,
-                "Cannot put text into articles folder input",
-                5);
-
-        this.waitForElementAndClick(
-                CREATE_READING_LIST_BUTTON,
-                "Cannot find create reading list button",
-                10);
-    }
-
     @Step("Closing the article")
     public void closeArticle() {
         if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
@@ -216,6 +180,7 @@ abstract public class ArticlePageObject extends MainPageObject {
             System.out.println("Method closeArticle() does nothing for platform " + Platform.getInstance().getPlatformVar());
         }
     }
+    @Step("Clicking cancel button on page")
     public void clickCancel() {
         if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
         this.waitForElementAndClick(
@@ -227,6 +192,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         }
     }
 
+    @Step("Adding article to created folder")
     public void addArticleToCreatedFolder(String name_of_folder) {
         this.waitForElementAndClick(
                OPTIONS_BUTTON,
@@ -241,6 +207,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         this.waitForNameOfFolderElementAndClick(name_of_folder);
     }
 
+    @Step("Asserting article to has title")
     public void assertArticleHasTitle(String substring, String title) {
         String title_of_article = getTitleOfArticle(substring);
         if (Platform.getInstance().isAndroid()) {

@@ -27,10 +27,12 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     /*TEMPLATES METHODS*/
+    @Step("Get result search element by substring")
     private static String getResultSearchElement(String substring) {
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
 
+    @Step("Get title and description search element by substring")
     private static String getTitleAndDescriptionOfSearchElement(String substring) {
         return SEARCH_TITLE_AND_DESCRIPTION_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
@@ -62,12 +64,13 @@ abstract public class SearchPageObject extends MainPageObject {
         this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find and type into search input", 10);
     }
 
-    @Step("Waiting for search result")
+    @Step("Waiting for search result by substring")
     public void waitForSearchResult(String substring) {
         String search_result_xpath = getResultSearchElement(substring);
         this.waitForElementPresent(search_result_xpath, "Cannot find search result with substring " + substring, 20);
     }
 
+    @Step("Waiting for element by title '{substringTitle}' and description '{substringDescription}' by substring in article title")
     public void waitForElementByTitleAndDescription(String substringTitle, String substringDescription) {
         String search_title_xpath = getTitleAndDescriptionOfSearchElement(substringTitle);
         String search_description_xpath = getTitleAndDescriptionOfSearchElement(substringDescription);
@@ -88,7 +91,7 @@ abstract public class SearchPageObject extends MainPageObject {
         return this.getAmountOfElements(SEARCH_RESULT_ELEMENT);
     }
 
-    @Step("Waiting foe empty results label")
+    @Step("Waiting for empty results label")
     public void waitForEmptyResultsLabel() {
         this.waitForElementPresent(SEARCH_EMPTY_RESULT_ELEMENT, "Cannot find empty result label by the request", 15);
     }
@@ -98,18 +101,22 @@ abstract public class SearchPageObject extends MainPageObject {
         this.assertElementNotPresent(SEARCH_RESULT_ELEMENT, "We supposed not to find any results by request");
     }
 
+    @Step("Waiting for appear of results of search")
     public void waitForAppearOfResultsOfSearch() {
         this.waitForElementPresent(SEARCH_RESULT_ELEMENT, "We supposed to find any results by request", 30);
     }
 
+    @Step("Waiting for disappear of results of search")
     public void waitForDisappearOfResultsOfSearch() {
         this.waitForElementNotPresent(SEARCH_RESULT_ELEMENT, "Search results are still present on page", 10);
     }
 
+    @Step("Waiting for search input text")
     public WebElement waitForSearchInputText() {
         return this.waitForElementPresent(SEARCH_INPUT_TEXT, "Cannot find search input text", 10);
     }
 
+    @Step("Clearing search input and typing search line '{search_line}'")
     public void clearSearchInputAndTypeSearchLine(String search_line) {
         if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
         this.waitForElementAndClear(SEARCH_INPUT_TEXT, "Cannot find and clear search input text", 10);
@@ -118,6 +125,7 @@ abstract public class SearchPageObject extends MainPageObject {
             System.out.println("Method clearSearchInputAndTypeSearchLine() does nothing for platform " + Platform.getInstance().getPlatformVar());}
     }
 
+    @Step("Asserting search input has text '{value}'")
     public void assertSearchInputHasText(String value) {
         WebElement text_element = waitForSearchInputText();
         if (Platform.getInstance().isAndroid()) {
@@ -134,6 +142,7 @@ abstract public class SearchPageObject extends MainPageObject {
         }
     }
 
+    @Step("Asserting search results have text '{text}'")
     public void assertSearchResultsHaveText(String text) {
         boolean found = false;
         List<WebElement> searchResults = findElements(SEARCH_RESULT_ELEMENT);
@@ -147,6 +156,7 @@ abstract public class SearchPageObject extends MainPageObject {
             Assert.fail("Search results have no text " + text);
     }
 
+    @Step("Clicking on skip button")
     public void clickSkip() {
         this.waitForElementAndClick(SEARCH_SKIP_BUTTON, "Cannot find and click skip button", 5);
     }

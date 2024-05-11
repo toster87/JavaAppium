@@ -1,5 +1,7 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.*;
@@ -11,8 +13,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
+@Epic("Tests of adding articles to the lists")
 public class MyListsTests extends CoreTestCase {
     @Test
+    @Features(value = {@Feature(value = "My lists"),@Feature(value = "Article")})
+    @DisplayName("Testing save one article to my list and deleting it")
+    @Description("We search an article, add it to list, go to the list and delete this article")
+    @Step("Starting test testSaveFirstArticleToMyList")
     public void testSaveFirstArticleToMyList() {
 
         String name_of_folder = "Learning programming";
@@ -57,6 +64,10 @@ public class MyListsTests extends CoreTestCase {
 
 
     @Test
+    @Features(value = {@Feature(value = "My lists"),@Feature(value = "Article")})
+    @DisplayName("Testing save two article to list and delete one of these articles from the list")
+    @Description("We search two articles, add it to list, open my lists, delete one of the article and make article was deleted")
+    @Step("Starting test testSaveTwoArticlesToMyList")
     public void testSaveTwoArticlesToMyList() {
 
         String name_of_folder = "Learning programming";
